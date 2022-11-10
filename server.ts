@@ -1,5 +1,6 @@
 require("dotenv").config();
 import express, { Request, Response } from "express";
+import bodyParser from "body-parser";
 
 const routes = require("./src/routes/index");
 
@@ -7,11 +8,17 @@ const app = express();
 const db = require("./database/index");
 
 db.sequelize
-  .sync({ alter: true, force: true })
+  .sync({ alter: true })
   .then(() => {
     console.log("db 연결 성공");
   })
   .catch(console.error);
+
+// parse requests of content-type - application/json
+app.use(bodyParser.json());
+
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // simple route
 app.get("/", (req: Request, res: Response) => {
