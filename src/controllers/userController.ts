@@ -16,4 +16,16 @@ async function signup(req: Request, res: Response) {
   }
 }
 
-module.exports = { signup };
+async function signin(req: Request, res: Response) {
+  try {
+    const { email, password } = req.body;
+    const data = await userService.signin(email, password);
+    return res.status(StatusCodes.OK).send({ data });
+  } catch (error) {
+    const err = error as ApiError;
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+}
+
+module.exports = { signup, signin };
