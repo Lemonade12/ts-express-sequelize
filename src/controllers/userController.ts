@@ -1,11 +1,16 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../modules/api.error";
+import { body, validationResult } from "express-validator";
 
 const userService = require("../services/userService");
 
 async function signup(req: Request, res: Response) {
   try {
+    const validation = validationResult(req);
+    if (!validation.isEmpty()) {
+      return res.status(StatusCodes.BAD_REQUEST).send({ message: validation.array() });
+    }
     const { email, password } = req.body;
     await userService.signup(email, password);
     return res.status(StatusCodes.OK).send({ message: "회원가입 완료" });

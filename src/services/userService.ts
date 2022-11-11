@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt";
 import ApiError from "../modules/api.error";
 import jwt from "jsonwebtoken";
-import { Json } from "sequelize/types/utils";
 const secret_key = process.env.SECRET_KEY!;
 
 const userRepo = require("../repository/userRepository");
