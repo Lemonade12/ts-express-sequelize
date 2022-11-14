@@ -10,10 +10,11 @@ async function readUserByEmail(email: string) {
   return data;
 }
 
-async function createUser(email: string, password: string) {
+async function createUser(email: string, password: string, name: string) {
   return user.create({
     email: email,
     password: password,
+    name: name,
   });
 }
 

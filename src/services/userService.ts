@@ -11,14 +11,14 @@ async function encryptPassword(password: string): Promise<string> {
   return result;
 }
 
-async function signup(email: string, password: string) {
+async function signup(email: string, password: string, name: string) {
   const isExistedUser = await userRepo.readUserByEmail(email);
   if (isExistedUser) {
     // 이메일 중복여부 체크
     const error = new ApiError(400, "이미 사용중인 이메일 입니다.");
     throw error;
   }
-  userRepo.createUser(email, await encryptPassword(password));
+  userRepo.createUser(email, await encryptPassword(password), name);
 }
 
 async function signin(

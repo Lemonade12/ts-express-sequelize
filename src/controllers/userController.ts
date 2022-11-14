@@ -11,8 +11,8 @@ async function signup(req: Request, res: Response) {
     if (!validation.isEmpty()) {
       return res.status(StatusCodes.BAD_REQUEST).send({ message: validation.array() });
     }
-    const { email, password } = req.body;
-    await userService.signup(email, password);
+    const { email, password, name } = req.body;
+    await userService.signup(email, password, name);
     return res.status(StatusCodes.OK).send({ message: "회원가입 완료" });
   } catch (error) {
     const err = error as ApiError;

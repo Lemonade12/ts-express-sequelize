@@ -16,6 +16,9 @@ module.exports = function (sequelize: Sequelize) {
       password: {
         type: DataTypes.STRING,
       },
+      name: {
+        type: DataTypes.STRING,
+      },
     },
     {
       timestamps: true,
