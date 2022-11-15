@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-async function validate(method: any) {
+async function validate(method: any,) {
   switch (method) {
     case "createUser": {
       return [

@@ -11,12 +11,7 @@ userRouter.post(
   body("name").not().isEmpty().withMessage("name is required."),
   userController.signup
 );
-userRouter.post(
-  "/user/signin",
-  body("email").isEmail(),
-  body("password").isLength({ min: 5 }),
-  userController.signin
-);
+userRouter.post("/user/signin", userController.signin);
 //router.get("/user", authMiddleware.auth, userController.signup);
 
 module.exports = userRouter;
