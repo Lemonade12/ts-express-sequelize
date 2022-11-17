@@ -1,6 +1,6 @@
-const postRepo = require("./postRepository");
+const postRepo = require("../repository/postRepository");
 
-async function createPost(title: string, content: string, hashtags: string, userId: number) {
+async function createPostService(title: string, content: string, hashtags: string, userId: number) {
   const newPost = await postRepo.createPost(title, content, userId);
 
   if (hashtags) {
@@ -22,3 +22,5 @@ async function createPost(title: string, content: string, hashtags: string, user
     }
   }
 }
+
+module.exports = { createPostService };

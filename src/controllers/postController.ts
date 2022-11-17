@@ -5,11 +5,11 @@ import { body, validationResult } from "express-validator";
 
 const postService = require("../services/postService");
 
-async function createPost(req: Request, res: Response) {
+async function createPostController(req: Request, res: Response) {
   try {
     const { title, content, hastags } = req.body;
     const userId = req.userId;
-    await postService.createPost(title, content, hastags, userId);
+    await postService.createPostService(title, content, hastags, userId);
     return res.status(StatusCodes.OK).send({ message: "게시글 작성 완료" });
   } catch (error) {
     const err = error as ApiError;
@@ -74,5 +74,5 @@ async function readPostList(req, res) {
 }*/
 
 module.exports = {
-  createPost,
+  createPostController,
 };
