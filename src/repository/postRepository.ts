@@ -1,3 +1,5 @@
+import { CreateInfoDTO, UpdateInfoDTO } from "../interfaces/post";
+
 const db = require("../../database/index");
 const post = db.post;
 const tag = db.tag;
@@ -43,8 +45,8 @@ async function readPostById(postId: number) {
   });
   return data;
 }
-/*
-async function updatePost(updateInfo, postId) {
+
+async function updatePost(updateInfo: UpdateInfoDTO, postId: number) {
   return post.update(updateInfo, {
     where: {
       id: postId,
@@ -52,6 +54,7 @@ async function updatePost(updateInfo, postId) {
   });
 }
 
+/*
 async function readLikeByPostIdAndUserId(postId, userId) {
   const data = await like.findOne({
     where: {
@@ -123,4 +126,5 @@ module.exports = {
   createPostTag,
   readTagByName,
   readPostById,
+  updatePost,
 };

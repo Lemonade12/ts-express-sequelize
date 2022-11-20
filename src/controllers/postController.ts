@@ -1,15 +1,16 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../modules/api.error";
+import { UpdateInfoDTO, CreateInfoDTO } from "../interfaces/post";
 import { body, validationResult } from "express-validator";
 
 const postService = require("../services/postService");
 
 async function createPostController(req: Request, res: Response) {
   try {
-    const { title, content, hastags } = req.body;
-    const userId = req.userId;
-    await postService.createPostService(title, content, hastags, userId);
+    const postInfo: CreateInfoDTO = req.body;
+    const userId: number = req.userId;
+    await postService.createPostService(postInfo, userId);
     return res.status(StatusCodes.OK).send({ message: "게시글 작성 완료" });
   } catch (error) {
     const err = error as ApiError;
@@ -18,19 +19,20 @@ async function createPostController(req: Request, res: Response) {
   }
 }
 
-/*async function updatePost(req, res) {
+async function updatePostController(req: Request, res: Response) {
   try {
-    const updateInfo = req.body;
-    const userId = req.userId;
-    const postId = req.params.id;
-    const data = await postService.updatePost(updateInfo, userId, postId);
+    const updateInfo: UpdateInfoDTO = req.body;
+    const userId: number = req.userId;
+    const postId: number = Number(req.params.id);
+    const data = await postService.updatePostService(updateInfo, userId, postId);
     return res.status(StatusCodes.OK).send(data);
-  } catch (err) {
+  } catch (error) {
+    const err = error as ApiError;
     console.log(err);
     return res.status(err.statusCode || 500).json({ message: err.message });
   }
 }
-
+/*
 async function readPost(req, res) {
   try {
     const postId = req.params.id;
@@ -75,4 +77,5 @@ async function readPostList(req, res) {
 
 module.exports = {
   createPostController,
+  updatePostController,
 };
