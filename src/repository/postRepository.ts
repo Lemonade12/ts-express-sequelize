@@ -54,8 +54,7 @@ async function updatePost(updateInfo: UpdateInfoDTO, postId: number) {
   });
 }
 
-/*
-async function readLikeByPostIdAndUserId(postId, userId) {
+async function readLikeByPostIdAndUserId(postId: number, userId: number) {
   const data = await like.findOne({
     where: {
       post_id: postId,
@@ -66,14 +65,14 @@ async function readLikeByPostIdAndUserId(postId, userId) {
   return data;
 }
 
-async function createLike(postId, userId) {
+async function createLike(postId: number, userId: number) {
   return like.create({
     post_id: postId,
     user_id: userId,
   });
 }
 
-async function deleteLike(postId, userId) {
+async function deleteLike(postId: number, userId: number) {
   return like.destroy({
     where: {
       post_id: postId,
@@ -82,6 +81,7 @@ async function deleteLike(postId, userId) {
   });
 }
 
+/*
 async function readPostList(condition) {
   const offset = (condition.page - 1) * condition.limit;
   const data = await post.findAll({
@@ -127,4 +127,7 @@ module.exports = {
   readTagByName,
   readPostById,
   updatePost,
+  readLikeByPostIdAndUserId,
+  createLike,
+  deleteLike,
 };

@@ -48,4 +48,39 @@ async function updatePostService(updateInfo: UpdateInfoDTO, userId: number, post
   }
 }
 
-module.exports = { createPostService, updatePostService };
+async function readPostService(postId: number) {
+  const postInfo = await postRepo.readPostById(postId);
+  if (!postInfo || postInfo.is_deleted == 1) {
+    // 게시글이 존재하지 않거나 삭제된 게시글인 경우
+    const error = new ApiError(404, "존재하지 않는 게시글 입니다.");
+    throw error;
+  }
+  //조회수 업데이트
+  const updateInfo: UpdateInfoDTO = {
+    hit: postInfo.hit + 1,
+  };
+  postInfo.hit++;
+  postRepo.updatePost(updateInfo, postId);
+  return postInfo;
+}
+
+async function likePost(postId: number, userId: number) {
+  const postInfo = await postRepo.readPostById(postId);
+  if (!postInfo || postInfo.is_deleted == 1) {
+    // 게시글이 존재하지 않거나 삭제된 게시글인 경우
+    const error = new ApiError(404, "존재하지 않는 게시글 입니다.");
+    throw error;
+  }
+  const isLiked = await postRepo.readLikeByPostIdAndUserId(postId, userId);
+  if (!isLiked) {
+    //좋아요 아닌 경우에는 좋아요
+    await postRepo.createLike(postId, userId);
+    return { isLiked: true };
+  } else {
+    // 좋아요 취소
+    await postRepo.deleteLike(postId, userId);
+    return { isLiked: false };
+  }
+}
+
+module.exports = { createPostService, updatePostService, readPostService, likePost };

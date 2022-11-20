@@ -1,6 +1,7 @@
 export interface UpdateInfoDTO {
-  content: string;
+  content?: string;
   is_deleted?: boolean;
+  hit?: number;
 }
 
 export interface CreateInfoDTO {

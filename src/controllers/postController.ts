@@ -32,29 +32,32 @@ async function updatePostController(req: Request, res: Response) {
     return res.status(err.statusCode || 500).json({ message: err.message });
   }
 }
-/*
-async function readPost(req, res) {
+
+async function readPostController(req: Request, res: Response) {
   try {
-    const postId = req.params.id;
-    const data = await postService.readPost(postId);
+    const postId: number = Number(req.params.id);
+    const data = await postService.readPostService(postId);
     return res.status(StatusCodes.OK).send({ data });
-  } catch (err) {
+  } catch (error) {
+    const err = error as ApiError;
     console.log(err);
     return res.status(err.statusCode || 500).json({ message: err.message });
   }
 }
 
-async function likeController(req, res) {
+async function likeController(req: Request, res: Response) {
   try {
-    const postId = req.params.id;
-    const userId = req.userId;
+    const postId: number = Number(req.params.id);
+    const userId: number = req.userId;
     const data = await postService.likePost(postId, userId);
     return res.status(StatusCodes.OK).send(data);
-  } catch (err) {
+  } catch (error) {
+    const err = error as ApiError;
     console.log(err);
     return res.status(err.statusCode || 500).json({ message: err.message });
   }
 }
+/*
 
 async function readPostList(req, res) {
   try {
@@ -78,4 +81,6 @@ async function readPostList(req, res) {
 module.exports = {
   createPostController,
   updatePostController,
+  readPostController,
+  likeController,
 };
