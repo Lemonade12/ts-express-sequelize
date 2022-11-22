@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../modules/api.error";
-import { UpdateInfoDTO, CreateInfoDTO } from "../interfaces/post";
+import { UpdateInfoDTO, CreateInfoDTO, ListCondition } from "../interfaces/post";
 import { body, validationResult } from "express-validator";
 
 const postService = require("../services/postService");
@@ -57,30 +57,31 @@ async function likeController(req: Request, res: Response) {
     return res.status(err.statusCode || 500).json({ message: err.message });
   }
 }
-/*
 
-async function readPostList(req, res) {
+async function readPostListController(req: Request, res: Response) {
   try {
-    const condition = {
-      search: req.query.search,
-      orderBy: req.query.orderBy,
-      order: req.query.order,
-      hastags: req.query.hastags,
-      page: req.query.page,
-      limit: req.query.limit,
+    const condition: ListCondition = {
+      search: req.query.search as string,
+      orderBy: req.query.orderBy as string,
+      order: req.query.order as string,
+      hastags: req.query.hastags as string,
+      page: Number(req.query.page as string),
+      limit: Number(req.query.limit as string),
     };
     console.log(condition);
-    const data = await postService.readPostList(condition);
+    const data = await postService.readPostListService(condition);
     return res.status(StatusCodes.OK).send({ data });
-  } catch (err) {
+  } catch (error) {
+    const err = error as ApiError;
     console.log(err);
     return res.status(err.statusCode || 500).json({ message: err.message });
   }
-}*/
+}
 
 module.exports = {
   createPostController,
   updatePostController,
   readPostController,
   likeController,
+  readPostListController,
 };

@@ -9,3 +9,12 @@ export interface CreateInfoDTO {
   content: string;
   hashtags: string;
 }
+
+export interface ListCondition {
+  search?: string;
+  orderBy?: string;
+  order?: string;
+  hastags?: string;
+  page?: number;
+  limit?: number;
+}

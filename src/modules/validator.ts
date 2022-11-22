@@ -1,6 +1,7 @@
+import { Request, Response, NextFunction } from "express";
 import { body } from "express-validator";
 
-async function validate(method: any,) {
+async function signValidator(method: any) {
   switch (method) {
     case "createUser": {
       return [
@@ -11,4 +12,6 @@ async function validate(method: any,) {
   }
 }
 
-module.exports = { validate };
+async function searchConditionValidator(req: Request, res: Response, next: NextFunction) {}
+
+module.exports = { signValidator };

@@ -1,4 +1,4 @@
-import { CreateInfoDTO, UpdateInfoDTO } from "../interfaces/post";
+import { CreateInfoDTO, UpdateInfoDTO, ListCondition } from "../interfaces/post";
 
 const db = require("../../database/index");
 const post = db.post;
@@ -81,45 +81,47 @@ async function deleteLike(postId: number, userId: number) {
   });
 }
 
-/*
-async function readPostList(condition) {
-  const offset = (condition.page - 1) * condition.limit;
-  const data = await post.findAll({
-    attributes: [
-      ["id", "게시글_id"],
-      ["title", "제목"],
-      ["hit", "조회수"],
-      ["createdAt", "작성일"],
-      [sequelize.col("user.name"), "작성자"],
-      [sequelize.fn("count", sequelize.col("like.id")), "좋아요 수"],
-    ],
-    include: [
-      {
-        model: user,
-        as: "user",
-        attributes: [],
+async function readPostList(condition: ListCondition) {
+  if (condition.page && condition.limit) {
+    const offset: number = (condition.page - 1) * condition.limit;
+
+    const data = await post.findAll({
+      attributes: [
+        ["id", "게시글_id"],
+        ["title", "제목"],
+        ["hit", "조회수"],
+        ["createdAt", "작성일"],
+        [sequelize.col("user.name"), "작성자"],
+        [sequelize.fn("count", sequelize.col("like.id")), "좋아요 수"],
+      ],
+      include: [
+        {
+          model: user,
+          as: "user",
+          attributes: [],
+        },
+        {
+          model: like,
+          as: "like",
+          attributes: [],
+        },
+      ],
+      group: "post.id",
+      where: {
+        title: {
+          [Op.like]: "%" + condition.search + "%",
+        },
       },
-      {
-        model: like,
-        as: "like",
-        attributes: [],
-      },
-    ],
-    group: "post.id",
-    where: {
-      title: {
-        [Op.like]: "%" + condition.search + "%",
-      },
-    },
-    order: [[condition.orderBy, condition.order]],
-    offset: offset,
-    limit: Number(condition.limit),
-    subQuery: false,
-    raw: true,
-  });
-  return data;
+      order: [[condition.orderBy, condition.order]],
+      offset: offset,
+      limit: condition.limit,
+      subQuery: false,
+      raw: true,
+    });
+    return data;
+  }
 }
-*/
+
 module.exports = {
   createPost,
   createTag,
@@ -130,4 +132,5 @@ module.exports = {
   readLikeByPostIdAndUserId,
   createLike,
   deleteLike,
+  readPostList,
 };

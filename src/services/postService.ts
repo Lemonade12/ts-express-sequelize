@@ -1,5 +1,5 @@
 import ApiError from "../modules/api.error";
-import { CreateInfoDTO, UpdateInfoDTO } from "../interfaces/post";
+import { CreateInfoDTO, ListCondition, UpdateInfoDTO } from "../interfaces/post";
 const postRepo = require("../repository/postRepository");
 
 async function createPostService(postInfo: CreateInfoDTO, userId: number) {
@@ -83,4 +83,39 @@ async function likePost(postId: number, userId: number) {
   }
 }
 
-module.exports = { createPostService, updatePostService, readPostService, likePost };
+async function readPostListService(condition: ListCondition) {
+  // default 값 세팅
+  const arrOrderBy = ["작성일", "조회수", "좋아요 수"];
+  const arrOrder = ["ASC", "DESC"];
+  if (condition.orderBy && !arrOrderBy.includes(condition.orderBy)) {
+    const error = new ApiError(400, "orderBy : '작성일','조회수','좋아요 수' 중에 입력해주세요.");
+    throw error;
+  }
+  if (condition.order && !arrOrder.includes(condition.order)) {
+    const error = new ApiError(400, "order : 'ASC','DESC' 중에 입력해주세요.");
+    throw error;
+  }
+  if (!condition.orderBy) {
+    condition.orderBy = "작성일";
+  }
+  if (!condition.order) {
+    condition.order = "DESC";
+  }
+  if (!condition.page) {
+    condition.page = 1;
+  }
+  if (!condition.limit) {
+    condition.limit = 10;
+  }
+  console.log(condition);
+  const data = await postRepo.readPostList(condition);
+  return data;
+}
+
+module.exports = {
+  createPostService,
+  updatePostService,
+  readPostService,
+  likePost,
+  readPostListService,
+};
