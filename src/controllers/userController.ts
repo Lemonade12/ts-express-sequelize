@@ -23,6 +23,10 @@ async function signup(req: Request, res: Response) {
 
 async function signin(req: Request, res: Response) {
   try {
+    const validation = validationResult(req);
+    if (!validation.isEmpty()) {
+      return res.status(StatusCodes.BAD_REQUEST).send({ message: validation.array() });
+    }
     const { email, password } = req.body;
     const data = await userService.signin(email, password);
     return res.status(StatusCodes.OK).send({ data });

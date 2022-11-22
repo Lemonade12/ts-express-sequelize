@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { body } from "express-validator";
 
-async function signValidator(method: any) {
+async function signValidator(method: any, req: Request, res: Response, next: NextFunction) {
   switch (method) {
     case "createUser": {
       return [
@@ -10,6 +10,7 @@ async function signValidator(method: any) {
       ];
     }
   }
+  next();
 }
 
 async function searchConditionValidator(req: Request, res: Response, next: NextFunction) {

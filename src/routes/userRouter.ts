@@ -6,12 +6,21 @@ const userRouter = express.Router();
 
 userRouter.post(
   "/user/signup",
-  body("email").isEmail().withMessage("Please check email format."),
-  body("password").isLength({ min: 5 }).withMessage("password must be at least 5 long."),
-  body("name").not().isEmpty().withMessage("name is required."),
+  [
+    body("email").isEmail().withMessage("Please check email format."),
+    body("password").isLength({ min: 5 }).withMessage("password must be at least 5 long."),
+    body("name").not().isEmpty().withMessage("name is required."),
+  ],
   userController.signup
 );
-userRouter.post("/user/signin", userController.signin);
+userRouter.post(
+  "/user/signin",
+  [
+    body("email").isEmail().withMessage("Please check email format."),
+    body("password").isLength({ min: 5 }).withMessage("password must be at least 5 long."),
+  ],
+  userController.signin
+);
 //router.get("/user", authMiddleware.auth, userController.signup);
 
 module.exports = userRouter;
