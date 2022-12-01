@@ -1,6 +1,9 @@
+const postRepo = require("../repository/postRepository");
 import ApiError from "../modules/api.error";
 import { CreateInfoDTO, ListCondition, UpdateInfoDTO } from "../interfaces/post";
-const postRepo = require("../repository/postRepository");
+
+const redisClient = require("../../database/redis");
+//redisClient.connect().then();
 
 async function createPostService(postInfo: CreateInfoDTO, userId: number) {
   const { title, content, hashtags } = postInfo;
@@ -55,12 +58,14 @@ async function readPostService(postId: number) {
     const error = new ApiError(404, "존재하지 않는 게시글 입니다.");
     throw error;
   }
-  //조회수 업데이트
+  //조회수 업데이트(나중에 redis에서 일정시간마다 업데이트)
   const updateInfo: UpdateInfoDTO = {
     hit: postInfo.hit + 1,
   };
   postInfo.hit++;
   postRepo.updatePost(updateInfo, postId);
+
+  //
   return postInfo;
 }
 

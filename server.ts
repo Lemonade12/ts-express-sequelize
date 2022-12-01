@@ -14,6 +14,9 @@ db.sequelize
   })
   .catch(console.error);
 
+const redisClient = require("./database/redis");
+redisClient.connect().then();
+
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
 
