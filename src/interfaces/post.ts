@@ -18,3 +18,8 @@ export interface ListCondition {
   page?: number;
   limit?: number;
 }
+
+export interface topHitListDTO {
+  id: number;
+  hit: number;
+}

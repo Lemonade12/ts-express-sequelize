@@ -122,6 +122,15 @@ async function readPostList(condition: ListCondition) {
   }
 }
 
+async function readHitRank() {
+  const data = await post.findAll({
+    attributes: ["id", "hit"],
+    order: [["hit", "DESC"]],
+    raw: true,
+  });
+  return data;
+}
+
 module.exports = {
   createPost,
   createTag,
@@ -133,4 +142,5 @@ module.exports = {
   createLike,
   deleteLike,
   readPostList,
+  readHitRank,
 };

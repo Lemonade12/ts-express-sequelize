@@ -1,6 +1,6 @@
 const postRepo = require("../repository/postRepository");
 import ApiError from "../modules/api.error";
-import { CreateInfoDTO, ListCondition, UpdateInfoDTO } from "../interfaces/post";
+import { CreateInfoDTO, ListCondition, UpdateInfoDTO, topHitListDTO } from "../interfaces/post";
 
 const redisClient = require("../../database/redis");
 //redisClient.connect().then();
@@ -65,7 +65,33 @@ async function readPostService(postId: number) {
   postInfo.hit++;
   postRepo.updatePost(updateInfo, postId);
 
-  //
+  //redis에 업뎃
+
+  const isExistedList = await redisClient.zCard("topHitList");
+  //redis에 있는지 체크
+
+  if (isExistedList) {
+    //redis에 있을때는 바로 redis에 업데이트
+    console.log("redis에 있음");
+    const hit: number = await redisClient.zScore("topHitList", String(postId));
+    await redisClient.zAdd("topHitList", {
+      score: hit + 1,
+      value: String(postId),
+    });
+  } else {
+    //redis에 없을때 db에서 가져와서 redis에 업데이트 해준다
+    console.log("redis에 없음");
+    let topHitList = [];
+    topHitList = await postRepo.readHitRank();
+    for (let i = 0; i < topHitList.length; i++) {
+      await redisClient.zAdd("topHitList", [
+        {
+          score: topHitList[i].hit,
+          value: String(topHitList[i].id),
+        },
+      ]);
+    }
+  }
   return postInfo;
 }
 
