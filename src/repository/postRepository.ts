@@ -131,6 +131,16 @@ async function readHitRank() {
   return data;
 }
 
+async function readHitTop10Rank() {
+  const data = await post.findAll({
+    attributes: ["id", "hit"],
+    order: [["hit", "DESC"]],
+    limit: 10,
+    raw: true,
+  });
+  return data;
+}
+
 module.exports = {
   createPost,
   createTag,
@@ -143,4 +153,5 @@ module.exports = {
   deleteLike,
   readPostList,
   readHitRank,
+  readHitTop10Rank,
 };

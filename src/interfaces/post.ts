@@ -19,7 +19,13 @@ export interface ListCondition {
   limit?: number;
 }
 
-export interface topHitListDTO {
-  id: number;
+export interface hitListDTO {
+  value: string;
+  score: number;
+}
+
+export interface hitRankListDTO {
+  ranking: number;
+  postId: number;
   hit: number;
 }

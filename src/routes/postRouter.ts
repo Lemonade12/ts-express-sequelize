@@ -10,5 +10,6 @@ router.patch("/post/:id", authMiddleware.auth, postController.updatePostControll
 router.get("/post/:id", postController.readPostController); // 게시글 상세보기(조회수 1증가)
 router.post("/post/like/:id", authMiddleware.auth, postController.likeController); // 좋아요, 좋아요 취소
 router.get("/post", validator.searchConditionValidator, postController.readPostListController); // 게시글 목록
+router.get("/hitRank", postController.readHitRankController); //게시물 조회수 랭킹(인기게시글 top 10)
 
 module.exports = router;

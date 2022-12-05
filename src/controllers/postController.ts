@@ -78,10 +78,22 @@ async function readPostListController(req: Request, res: Response) {
   }
 }
 
+async function readHitRankController(req: Request, res: Response) {
+  try {
+    const data = await postService.readHitRankService();
+    return res.status(StatusCodes.OK).send({ data });
+  } catch (error) {
+    const err = error as ApiError;
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+}
+
 module.exports = {
   createPostController,
   updatePostController,
   readPostController,
   likeController,
   readPostListController,
+  readHitRankController,
 };
