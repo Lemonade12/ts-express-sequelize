@@ -29,3 +29,8 @@ export interface hitRankListDTO {
   postId: number;
   hit: number;
 }
+
+export interface redisSortedSet {
+  score: number;
+  value: string;
+}

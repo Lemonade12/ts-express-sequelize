@@ -33,32 +33,12 @@ async function createPostService(postInfo: CreateInfoDTO, userId: number) {
       }
     }
   }
-
-  const isExistedList = await redisClient.zCard("topHitList");
-  //redis에 있는지 체크
-
-  if (isExistedList) {
-    //redis에 있을때는 바로 redis에 업데이트
-    console.log("redis에 있으면");
-    await redisClient.zAdd("topHitList", {
-      score: 0,
-      value: String(newPost.id),
-    });
-  } else {
-    // redis에 없으면
-    console.log("redis에 없으면");
-    //db에서 가져와서
-    const list = await postRepo.readHitRank();
-    //redis에 업데이트
-    for (let i = 0; i < list.length; i++) {
-      await redisClient.zAdd("topHitList", [
-        {
-          value: String(list[i].id),
-          score: list[i].hit,
-        },
-      ]);
-    }
-  }
+  //redis에 조회 수 업데이트
+  console.log("redis에 있으면");
+  await redisClient.zAdd("topHitList", {
+    score: 0,
+    value: String(newPost.id),
+  });
 }
 
 async function updatePostService(updateInfo: UpdateInfoDTO, userId: number, postId: number) {
@@ -98,32 +78,13 @@ async function readPostService(postId: number) {
   postRepo.updatePost(updateInfo, postId);
 
   //redis에 업뎃
-
-  const isExistedList = await redisClient.zCard("topHitList");
-  //redis에 있는지 체크
-
-  if (isExistedList) {
-    //redis에 있을때는 바로 redis에 업데이트
-    console.log("redis에 있음");
-    const hit: number = await redisClient.zScore("topHitList", String(postId));
-    await redisClient.zAdd("topHitList", {
-      score: hit + 1,
-      value: String(postId),
-    });
-  } else {
-    //redis에 없을때 db에서 가져와서 redis에 업데이트 해준다
-    console.log("redis에 없음");
-    let topHitList = [];
-    topHitList = await postRepo.readHitRank();
-    for (let i = 0; i < topHitList.length; i++) {
-      await redisClient.zAdd("topHitList", [
-        {
-          score: topHitList[i].hit,
-          value: String(topHitList[i].id),
-        },
-      ]);
-    }
-  }
+  //redis에 있을때는 바로 redis에 업데이트
+  console.log("redis에 있음");
+  const hit: number = await redisClient.zScore("topHitList", String(postId));
+  await redisClient.zAdd("topHitList", {
+    score: hit + 1,
+    value: String(postId),
+  }); //업데이트하는부분 체크 1증가 부분
   return postInfo;
 }
 
@@ -169,49 +130,20 @@ async function readHitRankService() {
   const isExistedList: number = await redisClient.zCard("topHitList");
   const top10RankList: hitRankListDTO[] = [];
   // redis에 있으면 redis에서 가져오고
-  if (isExistedList) {
-    console.log("redis에 있으면");
-    const hitList: hitListDTO[] = await redisClient.zRangeWithScores(
-      "topHitList",
-      -10,
-      isExistedList - 1
-    );
-    for (let i = 0; i < hitList.length; i++) {
-      top10RankList.push({
-        ranking: i + 1,
-        postId: Number(hitList[hitList.length - i - 1].value),
-        hit: hitList[hitList.length - i - 1].score,
-      });
-    }
-  } else {
-    // redis에 없으면
-    console.log("redis에 없으면");
-    //db에서 가져와서
-    const list = await postRepo.readHitRank();
-    //redis에 업데이트
-    for (let i = 0; i < list.length; i++) {
-      await redisClient.zAdd("topHitList", [
-        {
-          value: String(list[i].id),
-          score: list[i].hit,
-        },
-      ]);
-    }
-    //redis에서 가져옴
-    const hitList: hitListDTO[] = await redisClient.zRangeWithScores(
-      "topHitList",
-      -10,
-      isExistedList - 1
-    );
-    for (let i = 0; i < hitList.length; i++) {
-      top10RankList.push({
-        ranking: i + 1,
-        postId: Number(hitList[hitList.length - i - 1].value),
-        hit: hitList[hitList.length - i - 1].score,
-      });
-    }
+
+  console.log("redis에 있으면");
+  const hitList: hitListDTO[] = await redisClient.zRangeWithScores(
+    "topHitList",
+    -10,
+    isExistedList - 1
+  );
+  for (let i = 0; i < hitList.length; i++) {
+    top10RankList.push({
+      ranking: i + 1,
+      postId: Number(hitList[hitList.length - i - 1].value),
+      hit: hitList[hitList.length - i - 1].score,
+    });
   }
-  // redis에 없으면 db에서 redis에 업데이트하고 redis에서 가져온다
   return top10RankList;
 }
 
