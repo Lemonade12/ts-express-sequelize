@@ -50,13 +50,31 @@ async function updatePostService(updateInfo: UpdateInfoDTO, userId: number, post
   }
   // 해당 게시글 작성자인지 체크
   if (postInfo.user_id !== userId) {
-    const error = new ApiError(404, "해당 게시글에 대한 권한이 없습니다.");
+    const error = new ApiError(401, "해당 게시글에 대한 권한이 없습니다.");
     throw error;
   }
-  postRepo.updatePost(updateInfo, postId);
+  await postRepo.updatePost(updateInfo, postId);
+
   if (updateInfo.is_deleted == true) {
+    //이미 삭제된 게시글일 경우
+    if (postInfo.is_deleted == true) {
+      const error = new ApiError(400, "이미 삭제된 게시글 입니다.");
+      throw error;
+    }
+    //해당 게시글 redis에서 삭제
+    await redisClient.zRem("topHitList", String(postId));
     return { message: "게시글 삭제 완료" };
   } else if (updateInfo.is_deleted == false) {
+    //이미 복귀된? 존재하는 게시글일 경우
+    if (postInfo.is_deleted == false) {
+      const error = new ApiError(400, "이미 복구된(존재하는) 게시글 입니다.");
+      throw error;
+    }
+    //해당 게시글 redis에 업데이트(조회 수 유지할지?)
+    await redisClient.zAdd("topHitList", {
+      score: postInfo.hit,
+      value: String(postId),
+    });
     return { message: "게시글 복구 완료" };
   } else {
     return { message: "게시글 수정 완료" };
