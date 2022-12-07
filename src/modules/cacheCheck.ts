@@ -19,6 +19,7 @@ async function hitRankCacheCheck(req: Request, res: Response, next: NextFunction
         },
       ]);
     }
+    await redisClient.expire("topHitList", 3600); // after 1 hour expired
   }
   next();
 }
