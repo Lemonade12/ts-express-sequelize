@@ -61,20 +61,24 @@ async function updatePostService(updateInfo: UpdateInfoDTO, userId: number, post
       const error = new ApiError(400, "이미 삭제된 게시글 입니다.");
       throw error;
     }
-    //해당 게시글 redis에서 삭제
-    await redisClient.zRem("topHitList", String(postId));
+    //해당 게시글 redis에서 삭제(24시간 이내의 게시글일 경우)
+    if (postInfo.createdAt - Number(new Date()) <= 24 * 60 * 60 * 1000) {
+      await redisClient.zRem("topHitList", String(postId));
+    }
     return { message: "게시글 삭제 완료" };
   } else if (updateInfo.is_deleted == false) {
-    //이미 복귀된? 존재하는 게시글일 경우
+    //이미 복구된? 존재하는 게시글일 경우
     if (postInfo.is_deleted == false) {
       const error = new ApiError(400, "이미 복구된(존재하는) 게시글 입니다.");
       throw error;
     }
-    //해당 게시글 redis에 업데이트(조회 수 유지할지?)
-    await redisClient.zAdd("topHitList", {
-      score: postInfo.hit,
-      value: String(postId),
-    });
+    //해당 게시글 redis에 업데이트(24시간 이내의 게시글일 경우 / 조회 수 유지할지?)
+    if (postInfo.createdAt - Number(new Date()) <= 24 * 60 * 60 * 1000) {
+      await redisClient.zAdd("topHitList", {
+        score: postInfo.hit,
+        value: String(postId),
+      });
+    }
     return { message: "게시글 복구 완료" };
   } else {
     return { message: "게시글 수정 완료" };
