@@ -95,14 +95,15 @@ async function readPostService(postId: number) {
   postInfo.hit++;
   postRepo.updatePost(updateInfo, postId);
 
-  //redis에 업뎃
-  //redis에 있을때는 바로 redis에 업데이트
-  console.log("redis에 있음");
-  const hit: number = await redisClient.zScore("topHitList", String(postId));
-  await redisClient.zAdd("topHitList", {
-    score: hit + 1,
-    value: String(postId),
-  }); //업데이트하는부분 체크 1증가 부분
+  //24시간 이내의 게시글이면 redis에 업뎃
+  if (postInfo.createdAt - Number(new Date()) <= 24 * 60 * 60 * 1000) {
+    console.log("redis에 있음");
+    const hit: number = await redisClient.zScore("topHitList", String(postId));
+    await redisClient.zAdd("topHitList", {
+      score: hit + 1,
+      value: String(postId),
+    }); //업데이트하는부분 체크 1증가 부분
+  }
   return postInfo;
 }
 
@@ -150,6 +151,7 @@ async function readHitRankService() {
   // redis에 있으면 redis에서 가져오고
 
   console.log("redis에 있으면");
+  // redis 에서 top 10 조회수 게시글만 가져옴
   const hitList: hitListDTO[] = await redisClient.zRangeWithScores(
     "topHitList",
     -10,

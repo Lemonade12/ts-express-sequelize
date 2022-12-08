@@ -125,13 +125,18 @@ async function readPostList(condition: ListCondition) {
 async function readHitRank() {
   const data = await post.findAll({
     attributes: ["id", "hit"],
+    where: {
+      createdAt: {
+        [Op.gte]: Number(new Date()) - 24 * 60 * 60 * 1000, // 하루
+      },
+    },
     order: [["hit", "DESC"]],
     raw: true,
   });
   return data;
 }
 
-async function readHitTop10Rank() {
+/*async function readHitTop10Rank() {
   const data = await post.findAll({
     attributes: ["id", "hit"],
     order: [["hit", "DESC"]],
@@ -139,7 +144,7 @@ async function readHitTop10Rank() {
     raw: true,
   });
   return data;
-}
+}*/
 
 module.exports = {
   createPost,
@@ -153,5 +158,4 @@ module.exports = {
   deleteLike,
   readPostList,
   readHitRank,
-  readHitTop10Rank,
 };
