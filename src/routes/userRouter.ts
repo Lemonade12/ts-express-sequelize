@@ -4,6 +4,7 @@ const validator = require("../modules/validator");
 const userController = require("../controllers/userController");
 const userRouter = express.Router();
 
+//회원가입
 userRouter.post(
   "/user/signup",
   [
@@ -13,6 +14,8 @@ userRouter.post(
   ],
   userController.signup
 );
+
+//로그인
 userRouter.post(
   "/user/signin",
   [
@@ -21,6 +24,8 @@ userRouter.post(
   ],
   userController.signin
 );
-//router.get("/user", authMiddleware.auth, userController.signup);
+
+//일일방문자수(오늘), 중복카운트x
+userRouter.get("/user/visitor", userController.readTodayVisitorController);
 
 module.exports = userRouter;

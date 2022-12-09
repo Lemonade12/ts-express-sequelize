@@ -37,4 +37,15 @@ async function signin(req: Request, res: Response) {
   }
 }
 
-module.exports = { signup, signin };
+async function readTodayVisitorController(req: Request, res: Response) {
+  try {
+    const data: number = await userService.readTodayVisitorService();
+    return res.status(StatusCodes.OK).send({ data });
+  } catch (error) {
+    const err = error as ApiError;
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+}
+
+module.exports = { signup, signin, readTodayVisitorController };
