@@ -122,6 +122,7 @@ async function readPostList(condition: ListCondition) {
   }
 }
 
+// 24시간 이내 게시글만, is_deleted 체크해야함
 async function readHitRank() {
   const data = await post.findAll({
     attributes: ["id", "hit"],

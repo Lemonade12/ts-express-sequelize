@@ -1,11 +1,13 @@
 require("dotenv").config();
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
+import socket from "./socket";
 
 const routes = require("./src/routes/index");
 
 const app = express();
 const db = require("./database/index");
+const http = require("http");
 
 db.sequelize
   .sync({ alter: true })
@@ -30,8 +32,12 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use(routes);
 
+const server = http.createServer(app);
+
 // set port, listen for requests
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on Port ${PORT}!`);
 });
+
+socket(server);
