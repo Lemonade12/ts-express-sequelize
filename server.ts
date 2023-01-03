@@ -2,11 +2,11 @@ require("dotenv").config();
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import socket from "./socket";
+import * as fs from "fs";
 
 const routes = require("./src/routes/index");
 
 const app = express();
-const fs = require("fs");
 const db = require("./database/index");
 const http = require("http");
 
@@ -36,7 +36,7 @@ app.use("/css", express.static("./static/css"));
 app.use("/js", express.static("./static/js"));
 
 app.get("/chat", function (request, response) {
-  fs.readFile("./static/index.html", function (err: any, data: any) {
+  fs.readFile("./static/index.html", function (err, data) {
     if (err) {
       response.send("에러");
     } else {
