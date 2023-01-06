@@ -1,4 +1,5 @@
 import http from "http";
+import { Request, Response } from "express";
 import { Server, Socket } from "socket.io";
 
 type Socket2 = Socket & { name?: string };
@@ -17,7 +18,7 @@ function socket(server: http.Server) {
       socket.name = data;
       io.emit("update", {
         type: "connect",
-        name: "SERVER",
+        name: "알림",
         message: data + "님이 입장하였습니다.",
       });
     });
@@ -37,7 +38,7 @@ function socket(server: http.Server) {
       console.log(socket.name + "님이 퇴장하였습니다.");
       socket.broadcast.emit("update", {
         type: "connect",
-        name: "SERVER",
+        name: "알림",
         message: socket.name + "님이 퇴장하였습니다.",
       });
       //console.log("클라이언트 접속 해제", ip, socket.id);

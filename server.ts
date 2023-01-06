@@ -35,18 +35,6 @@ app.use(routes);
 app.use("/css", express.static("./static/css"));
 app.use("/js", express.static("./static/js"));
 
-app.get("/chat", function (request, response) {
-  fs.readFile("./static/index.html", function (err, data) {
-    if (err) {
-      response.send("에러");
-    } else {
-      response.writeHead(200, { "Content-Type": "text/html" });
-      response.write(data);
-      response.end();
-    }
-  });
-});
-
 const server = http.createServer(app);
 
 // set port, listen for requests
@@ -54,5 +42,5 @@ const PORT = process.env.PORT || 10000;
 server.listen(PORT, () => {
   console.log(`Server is running on Port ${PORT}!`);
 });
-
 socket(server);
+module.exports = server;
