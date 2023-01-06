@@ -2,7 +2,7 @@ import { Sequelize, DataTypes } from "sequelize";
 
 module.exports = function (sequelize: Sequelize) {
   return sequelize.define(
-    "user",
+    "notice",
     {
       id: {
         autoIncrement: true,
@@ -10,24 +10,32 @@ module.exports = function (sequelize: Sequelize) {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      auth: {
+      user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 1,
       },
-      email: {
+      title: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
-      password: {
+      content: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
-      name: {
-        type: DataTypes.STRING,
+      hit: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      is_deleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: 0,
       },
     },
     {
       timestamps: true,
-      tableName: "user",
+      tableName: "notice",
       charset: "utf8mb4",
     }
   );

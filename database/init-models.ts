@@ -5,6 +5,7 @@ var postTagModel = require("../src/models/post_tag");
 var tagModel = require("../src/models/tag");
 var likeModel = require("../src/models/like");
 var chatLogModel = require("../src/models/chat_log");
+var noticeModel = require("../src/models/notice");
 
 function initModels(sequelize: Sequelize) {
   var user = userModel(sequelize);
@@ -13,6 +14,7 @@ function initModels(sequelize: Sequelize) {
   var tag = tagModel(sequelize);
   var like = likeModel(sequelize);
   var chat_log = chatLogModel(sequelize);
+  var notice = noticeModel(sequelize);
 
   like.belongsTo(user, { foreignKey: "user_id", as: "user" });
   user.hasMany(like, { foreignKey: "user_id", as: "like" });
@@ -24,6 +26,8 @@ function initModels(sequelize: Sequelize) {
   tag.hasMany(post_tag, { foreignKey: "tag_id", as: "post_tag" });
   like.belongsTo(post, { foreignKey: "post_id", as: "post" });
   post.hasMany(like, { foreignKey: "post_id", as: "like" });
+  notice.belongsTo(user, { foreignKey: "user_id", as: "user" });
+  user.hasMany(notice, { foreignKey: "user_id", as: "notice" });
 
   return {
     user,
@@ -32,6 +36,7 @@ function initModels(sequelize: Sequelize) {
     tag,
     like,
     chat_log,
+    notice,
   };
 }
 module.exports = initModels;
