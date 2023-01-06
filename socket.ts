@@ -1,6 +1,8 @@
 import http from "http";
-import { Request, Response } from "express";
 import { Server, Socket } from "socket.io";
+
+const db = require("./database/index");
+const chat_log = db.chat_log;
 
 type Socket2 = Socket & { name?: string };
 
@@ -12,7 +14,6 @@ function socket(server: http.Server) {
   });
 
   io.on("connection", (socket: Socket2) => {
-    //* ip 정보 얻기
     socket.on("newUser", (data) => {
       console.log(data + "님이 입장하였습니다.");
       socket.name = data;
@@ -22,6 +23,7 @@ function socket(server: http.Server) {
         message: data + "님이 입장하였습니다.",
       });
     });
+    // ip 정보 관련
     //const ip = socket.conn.remoteAddress;
     //console.log("새로운 클라이언트 접속!", ip, socket.id);
     // socket.id 는 소켓 연결된 고유한 클라이언트 식별자라고 보면된다. 채팅방의 입장한 고유한 사람
@@ -31,6 +33,10 @@ function socket(server: http.Server) {
       data.name = socket.name;
       console.log(data);
       socket.broadcast.emit("update", data);
+      chat_log.create({
+        name: data.name,
+        content: data.message,
+      });
     });
 
     //* 연결 종료 시
@@ -42,7 +48,6 @@ function socket(server: http.Server) {
         message: socket.name + "님이 퇴장하였습니다.",
       });
       //console.log("클라이언트 접속 해제", ip, socket.id);
-      //clearInterval(interval);
     });
 
     //* 에러 시
