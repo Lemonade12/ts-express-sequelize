@@ -7,7 +7,7 @@ export interface UpdateInfoDTO {
 export interface CreateInfoDTO {
   title: string;
   content: string;
-  hashtags: string;
+  hashtags?: string;
 }
 
 export interface ListCondition {

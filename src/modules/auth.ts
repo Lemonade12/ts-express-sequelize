@@ -6,7 +6,7 @@ import sequelize from "sequelize";
 const Op = sequelize.Op;
 const secret_key = process.env.SECRET_KEY!;
 
-const auth = async (req: Request, res: Response, next: NextFunction) => {
+async function auth(req: Request, res: Response, next: NextFunction) {
   if (req.headers.authorization) {
     const access_token = req.headers.authorization;
     jwt.verify(access_token, secret_key, async (error, decoded) => {
@@ -34,5 +34,20 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
     // console.log(456456);
     return res.status(401).json({ message: "Access token 이 존재하지 않습니다." });
   }
-};
-module.exports = { auth };
+}
+
+async function isAdmin(req: Request, res: Response, next: NextFunction) {
+  // userId를 가지고 관리자인지 아닌지 체크
+  const userInfo = await user.findOne({
+    where: {
+      id: req.userId,
+    },
+  });
+  if (userInfo.auth == 0) {
+    next();
+  } else {
+    return res.status(401).json({ message: "해당 게시글에 대한 권한이 부족합니다." });
+  }
+}
+
+module.exports = { auth, isAdmin };
