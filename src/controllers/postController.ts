@@ -11,9 +11,7 @@ async function createPostController(req: Request, res: Response) {
   try {
     const userId: number = req.userId;
     const postInfo: CreateInfoDTO = req.body.data;
-    console.log(postInfo);
     const postId: number = await postService.createPostService(postInfo, userId);
-    console.log(req.files);
     if (req.files) {
       (req.files as Express.Multer.File[]).map(async (data) => {
         const originalName = data.originalname.normalize("NFC");
