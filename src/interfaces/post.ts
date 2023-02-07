@@ -34,3 +34,12 @@ export interface redisSortedSet {
   score: number;
   value: string;
 }
+
+export interface fileInfoDTO {
+  post_id: number;
+  user_id: number;
+  origin_file_nm: string;
+  save_file_nm: string;
+  file_extension: string;
+  file_size: number;
+}

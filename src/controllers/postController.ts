@@ -4,14 +4,32 @@ import ApiError from "../modules/api.error";
 import { UpdateInfoDTO, CreateInfoDTO, ListCondition } from "../interfaces/post";
 import { body, validationResult } from "express-validator";
 
+const postRepo = require("../repository/postRepository");
 const postService = require("../services/postService");
 
 async function createPostController(req: Request, res: Response) {
   try {
-    const postInfo: CreateInfoDTO = req.body;
     const userId: number = req.userId;
-    await postService.createPostService(postInfo, userId);
-    return res.status(StatusCodes.OK).send({ message: "게시글 작성 완료" });
+    const postInfo: CreateInfoDTO = req.body.data;
+    console.log(postInfo);
+    const postId: number = await postService.createPostService(postInfo, userId);
+    console.log(req.files);
+    if (req.files) {
+      (req.files as Express.Multer.File[]).map(async (data) => {
+        const originalName = data.originalname.normalize("NFC");
+        const fileName = data.filename.normalize("NFC");
+        const file = {
+          post_id: postId,
+          user_id: userId,
+          origin_file_nm: originalName,
+          save_file_nm: fileName,
+          file_extension: data.mimetype.slice(-3),
+          file_size: data.size,
+        };
+        await postRepo.uploadFile(file);
+      });
+    }
+    return res.status(201).json({ message: "게시물이 등록되었습니다." });
   } catch (error) {
     const err = error as ApiError;
     console.log(err);

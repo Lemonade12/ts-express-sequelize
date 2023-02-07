@@ -1,4 +1,6 @@
 const postRepo = require("../repository/postRepository");
+import multer from "multer";
+import fs from "fs";
 import ApiError from "../modules/api.error";
 import {
   CreateInfoDTO,
@@ -7,6 +9,8 @@ import {
   hitRankListDTO,
   hitListDTO,
 } from "../interfaces/post";
+import { Request, Response } from "express";
+import path from "path";
 
 const redisClient = require("../../database/redis");
 //redisClient.connect().then();
@@ -39,6 +43,7 @@ async function createPostService(postInfo: CreateInfoDTO, userId: number) {
     score: 0,
     value: String(newPost.id),
   });
+  return newPost.id;
 }
 
 async function updatePostService(updateInfo: UpdateInfoDTO, userId: number, postId: number) {

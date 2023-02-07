@@ -1,4 +1,4 @@
-import { CreateInfoDTO, UpdateInfoDTO, ListCondition } from "../interfaces/post";
+import { CreateInfoDTO, UpdateInfoDTO, ListCondition, fileInfoDTO } from "../interfaces/post";
 
 const db = require("../../database/index");
 const post = db.post;
@@ -6,6 +6,7 @@ const tag = db.tag;
 const post_tag = db.post_tag;
 const like = db.like;
 const user = db.user;
+const file = db.file;
 const sequelize = require("sequelize");
 const Op = sequelize.Op;
 
@@ -137,6 +138,10 @@ async function readHitRank() {
   return data;
 }
 
+async function uploadFile(fileInfo: fileInfoDTO) {
+  return file.create(fileInfo);
+}
+
 /*async function readHitTop10Rank() {
   const data = await post.findAll({
     attributes: ["id", "hit"],
@@ -159,4 +164,5 @@ module.exports = {
   deleteLike,
   readPostList,
   readHitRank,
+  uploadFile,
 };

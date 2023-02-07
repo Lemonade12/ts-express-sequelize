@@ -2,7 +2,6 @@ require("dotenv").config();
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import socket from "./socket";
-import * as fs from "fs";
 
 const routes = require("./src/routes/index");
 
