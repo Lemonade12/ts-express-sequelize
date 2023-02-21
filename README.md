@@ -80,7 +80,7 @@
 
 ## 📌 적용 기술
 
-- 사용언어 : Javascript
+- 사용언어 : Typescript
 - 런타임 환경 : Node.js
 - 프레임워크 : Express
 - ORM : Sequelize
