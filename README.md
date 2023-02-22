@@ -51,8 +51,9 @@
 - 3. Filtering : 해시태그로 검색(구현중)
 - 4. Pagination : 1페이지 당 게시글 수를 조정할 수 있습니다.(ex. page=1 limit=10) default(page=1 limit=10)
 
-### 게시글 조회수 랭킹
+### 실시간 인기 게시글
 - Redis에서 top 10 조회수 게시글 리스트를 가져옴
+- 전체 조회수 기반이라 24시간 이내에 작성된 게시글만 가져옴
 
 ### 공지글
 - 관리자 권한만 공지글 작성, 수정, 삭제 등 가능
@@ -69,8 +70,8 @@
 
 
 ## 📌 DB Modeling
+<img width="588" alt="스크린샷 2023-02-22 오후 4 26 41" src="https://user-images.githubusercontent.com/19259688/220551703-7b37d845-7aef-4ef0-9537-32c33e8f72e7.png">
 
-- posts : 게시글 테이블(id, password, title, content, weather, createdAt, updatedAt)
 <br>
 
 ## 📌 API DOCS
