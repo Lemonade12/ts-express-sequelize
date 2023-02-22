@@ -2,6 +2,7 @@
   "dependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.14",
+    "@types/jest": "^29.4.0",
     "@types/multer": "^1.4.7",
     "@types/node": "^18.11.9",
     "bcrypt": "^5.1.0",
@@ -9,12 +10,14 @@
     "express": "^4.18.2",
     "express-validator": "^6.14.2",
     "http-status-codes": "^2.2.0",
+    "jest": "^29.4.3",
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^2.3.3",
     "redis": "^4.5.0",
     "sequelize": "^6.21.3",
     "socket.io": "^4.5.4",
+    "ts-jest": "^29.0.5",
     "typescript": "^4.8.4"
   },
   "devDependencies": {
@@ -26,7 +29,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon server.ts",
     "dev": "nodemon --watch \"*.ts\" --exec \"ts-node\" --files server.ts"
   },
