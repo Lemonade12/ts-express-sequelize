@@ -82,6 +82,7 @@
 - 프레임워크 : Express
 - ORM : Sequelize
 - 데이터베이스 : MySQL
+- 테스트 : Jest
   <br/> <br/>
 
 ## 📌 Commit Convention
