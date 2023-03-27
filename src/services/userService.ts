@@ -35,7 +35,8 @@ async function signup(email: string, password: string, name: string) {
     const error = new ApiError(400, "이미 사용중인 이메일 입니다.");
     throw error;
   }
-  userRepo.createUser(email, await encryptPassword(password), name);
+  const userInfo = await userRepo.createUser(email, await encryptPassword(password), name);
+  return userInfo;
 }
 
 async function signin(
