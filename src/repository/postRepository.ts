@@ -152,6 +152,15 @@ async function createComment(postId: number, userId: number, content: string) {
   });
 }
 
+async function readComment(commentId: number) {
+  const data = comment.findOne({
+    where: {
+      id: commentId,
+    },
+  });
+  return data;
+}
+
 async function readCommentList(postId: number) {
   const data = comment.findAll({
     attributes: [
@@ -172,6 +181,19 @@ async function readCommentList(postId: number) {
     },
   });
   return data;
+}
+
+async function updateComment(content: string, commentId: number) {
+  return comment.update(
+    {
+      content: content,
+    },
+    {
+      where: {
+        id: commentId,
+      },
+    }
+  );
 }
 
 async function createCommentAlarm(userId: number, commentId: number) {
@@ -277,6 +299,8 @@ module.exports = {
   readHitRank,
   uploadFile,
   createComment,
+  updateComment,
+  readComment,
   readCommentList,
   createCommentAlarm,
   readAlarmList,
