@@ -54,3 +54,8 @@ export interface alarmInfoDTO {
   userId: number;
   commentId: number;
 }
+
+export interface commentUpdateInfoDTO {
+  content?: string;
+  is_deleted?: boolean;
+}

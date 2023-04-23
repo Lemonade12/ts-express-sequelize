@@ -7,6 +7,7 @@ import {
   ListCondition,
   commentInfoDTO,
   alarmInfoDTO,
+  commentUpdateInfoDTO,
 } from "../interfaces/post";
 import { body, validationResult } from "express-validator";
 
@@ -161,11 +162,11 @@ async function readAlarmController(req: Request, res: Response) {
 
 async function updateCommentController(req: Request, res: Response) {
   try {
-    const content: string = req.body.content;
+    const updateInfo: commentUpdateInfoDTO = req.body;
     const userId: number = req.userId;
     const commentId: number = Number(req.params.id);
-    const data = await postService.updateCommentService(content, userId, commentId);
-    return res.status(201).json({ message: "댓글이 수정되었습니다." });
+    const data = await postService.updateCommentService(updateInfo, userId, commentId);
+    return res.status(StatusCodes.OK).send(data);
   } catch (error) {
     const err = error as ApiError;
     console.log(err);

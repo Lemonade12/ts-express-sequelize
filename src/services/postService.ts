@@ -10,6 +10,7 @@ import {
   hitListDTO,
   commentInfoDTO,
   alarmInfoDTO,
+  commentUpdateInfoDTO,
 } from "../interfaces/post";
 import { Request, Response } from "express";
 import path from "path";
@@ -202,11 +203,15 @@ async function readAlarmService(alarmId: number) {
   return alarmInfo;
 }
 
-async function updateCommentService(content: string, userId: number, commentId: number) {
+async function updateCommentService(
+  updateInfo: commentUpdateInfoDTO,
+  userId: number,
+  commentId: number
+) {
   const commentInfo = await postRepo.readComment(commentId);
   // 댓글 존재 유무 체크
   if (!commentInfo) {
-    const error = new ApiError(404, "존재하지 않는 게시글 입니다.");
+    const error = new ApiError(404, "존재하지 않는 댓글 입니다.");
     throw error;
   }
   // 해당 게시글 작성자인지 체크
@@ -214,7 +219,19 @@ async function updateCommentService(content: string, userId: number, commentId: 
     const error = new ApiError(401, "해당 댓글에 대한 권한이 없습니다.");
     throw error;
   }
-  await postRepo.updateComment(content, commentId);
+  if (updateInfo.is_deleted == true) {
+    // 댓글 삭제
+    if (commentInfo.is_deleted == true) {
+      const error = new ApiError(400, "이미 삭제된 댓글 입니다.");
+      throw error;
+    }
+    await postRepo.updateComment(updateInfo, commentId);
+    return { message: "댓글 삭제 완료" };
+  } else {
+    // 댓글 수정
+    await postRepo.updateComment(updateInfo, commentId);
+    return { message: "댓글 수정 완료" };
+  }
 }
 
 module.exports = {

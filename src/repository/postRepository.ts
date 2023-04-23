@@ -1,4 +1,10 @@
-import { CreateInfoDTO, UpdateInfoDTO, ListCondition, fileInfoDTO } from "../interfaces/post";
+import {
+  CreateInfoDTO,
+  UpdateInfoDTO,
+  ListCondition,
+  fileInfoDTO,
+  commentUpdateInfoDTO,
+} from "../interfaces/post";
 
 const db = require("../../database/index");
 const post = db.post;
@@ -183,17 +189,12 @@ async function readCommentList(postId: number) {
   return data;
 }
 
-async function updateComment(content: string, commentId: number) {
-  return comment.update(
-    {
-      content: content,
+async function updateComment(updateInfo: commentUpdateInfoDTO, commentId: number) {
+  return comment.update(updateInfo, {
+    where: {
+      id: commentId,
     },
-    {
-      where: {
-        id: commentId,
-      },
-    }
-  );
+  });
 }
 
 async function createCommentAlarm(userId: number, commentId: number) {
