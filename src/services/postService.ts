@@ -8,6 +8,8 @@ import {
   UpdateInfoDTO,
   hitRankListDTO,
   hitListDTO,
+  commentInfoDTO,
+  alarmInfoDTO,
 } from "../interfaces/post";
 import { Request, Response } from "express";
 import path from "path";
@@ -176,6 +178,29 @@ async function readHitRankService() {
   return top10RankList;
 }
 
+async function createCommentService(commentInfo: commentInfoDTO) {
+  const { postId, userId, content } = commentInfo;
+  const newComment = await postRepo.createComment(postId, userId, content);
+  //console.log(newComment.user_id);
+  return newComment;
+}
+
+async function createCommentAlarmService(alarmInfo: alarmInfoDTO) {
+  const { userId, commentId } = alarmInfo;
+  const newAlarm = await postRepo.createCommentAlarm(userId, commentId);
+  return newAlarm;
+}
+
+async function readAlarmListService(userId: number) {
+  const alarmList = await postRepo.readAlarmList(userId);
+  return alarmList;
+}
+
+async function readAlarmService(alarmId: number) {
+  const alarmInfo = await postRepo.readAlarm(alarmId);
+  return alarmInfo;
+}
+
 module.exports = {
   createPostService,
   updatePostService,
@@ -183,4 +208,8 @@ module.exports = {
   likePost,
   readPostListService,
   readHitRankService,
+  createCommentService,
+  createCommentAlarmService,
+  readAlarmListService,
+  readAlarmService,
 };

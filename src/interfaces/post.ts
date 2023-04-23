@@ -43,3 +43,14 @@ export interface fileInfoDTO {
   file_extension: string;
   file_size: number;
 }
+
+export interface commentInfoDTO {
+  postId: number;
+  userId: number;
+  content: string;
+}
+
+export interface alarmInfoDTO {
+  userId: number;
+  commentId: number;
+}

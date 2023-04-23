@@ -7,6 +7,8 @@ const post_tag = db.post_tag;
 const like = db.like;
 const user = db.user;
 const file = db.file;
+const comment = db.comment;
+const alarm = db.alarm;
 const sequelize = require("sequelize");
 const Op = sequelize.Op;
 
@@ -142,6 +144,93 @@ async function uploadFile(fileInfo: fileInfoDTO) {
   return file.create(fileInfo);
 }
 
+async function createComment(postId: number, userId: number, content: string) {
+  return comment.create({
+    post_id: postId,
+    user_id: userId,
+    content: content,
+  });
+}
+
+async function createCommentAlarm(userId: number, commentId: number) {
+  return alarm.create({
+    user_id: userId,
+    comment_id: commentId,
+  });
+}
+
+async function readAlarmList(userId: number) {
+  const data = await alarm.findAll({
+    attributes: [
+      ["id", "알람_id"],
+      [sequelize.col("comment.id"), "댓글_id"],
+      [sequelize.col("comment.post.id"), "게시글_id"],
+      [sequelize.col("comment.post.title"), "게시글제목"],
+      [sequelize.col("comment.content"), "댓글내용"],
+    ],
+    include: [
+      {
+        model: comment,
+        as: "comment",
+        attributes: [],
+        include: [
+          {
+            model: post,
+            as: "post",
+            attributes: [],
+          },
+        ],
+      },
+    ],
+    where: {
+      user_id: userId,
+      is_checked: false,
+    },
+    subQuery: false,
+    raw: true,
+  });
+  return data;
+}
+
+async function readAlarm(alarmId: number) {
+  const data = await alarm.findOne({
+    attributes: [
+      ["id", "알람_id"],
+      [sequelize.col("comment.id"), "댓글_id"],
+      [sequelize.col("comment.post.id"), "게시글_id"],
+    ],
+    include: [
+      {
+        model: comment,
+        as: "comment",
+        attributes: [],
+        include: [
+          {
+            model: post,
+            as: "post",
+            attributes: [],
+          },
+        ],
+      },
+    ],
+    where: {
+      id: alarmId,
+    },
+    subQuery: false,
+    raw: true,
+  });
+
+  await alarm.update(
+    { is_checked: true },
+    {
+      where: {
+        id: alarmId,
+      },
+    }
+  );
+  return data;
+}
+
 /*async function readHitTop10Rank() {
   const data = await post.findAll({
     attributes: ["id", "hit"],
@@ -165,4 +254,8 @@ module.exports = {
   readPostList,
   readHitRank,
   uploadFile,
+  createComment,
+  createCommentAlarm,
+  readAlarmList,
+  readAlarm,
 };

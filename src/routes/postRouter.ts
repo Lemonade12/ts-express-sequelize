@@ -69,4 +69,7 @@ router.get("/post/:id", cacheCheck.hitRankCacheCheck, postController.readPostCon
 router.post("/post/like/:id", authMiddleware.auth, postController.likeController); // 좋아요, 좋아요 취소
 router.get("/post", validator.searchConditionValidator, postController.readPostListController); // 게시글 목록
 router.get("/hitRank", cacheCheck.hitRankCacheCheck, postController.readHitRankController); //게시물 조회수 랭킹(인기게시글 top 10)
+router.post("/comment", authMiddleware.auth, postController.createCommentController); //댓글 작성, 알림 업데이트
+router.get("/alarm/:id", postController.readAlarmController); //댓글알람 읽기
+router.get("/alarmList", authMiddleware.auth, postController.readAlarmListController); //댓글 알림 리스트
 module.exports = router;

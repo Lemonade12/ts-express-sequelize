@@ -1,7 +1,13 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../modules/api.error";
-import { UpdateInfoDTO, CreateInfoDTO, ListCondition } from "../interfaces/post";
+import {
+  UpdateInfoDTO,
+  CreateInfoDTO,
+  ListCondition,
+  commentInfoDTO,
+  alarmInfoDTO,
+} from "../interfaces/post";
 import { body, validationResult } from "express-validator";
 
 const postRepo = require("../repository/postRepository");
@@ -105,6 +111,54 @@ async function readHitRankController(req: Request, res: Response) {
   }
 }
 
+async function createCommentController(req: Request, res: Response) {
+  try {
+    const userId: number = req.userId;
+    const content: string = req.body.content;
+    const commentInfo: commentInfoDTO = {
+      postId: req.body.postId,
+      userId: userId,
+      content: req.body.content,
+    };
+    const newComment = await postService.createCommentService(commentInfo);
+
+    const alarmInfo: alarmInfoDTO = {
+      userId: userId,
+      commentId: newComment.id as number,
+    };
+    const newAlarm = await postService.createCommentAlarmService(alarmInfo);
+    return res.status(201).json({ message: "댓글이 등록되었습니다." });
+  } catch (error) {
+    const err = error as ApiError;
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+}
+
+async function readAlarmListController(req: Request, res: Response) {
+  try {
+    const userId: number = req.userId;
+    const data = await postService.readAlarmListService(userId);
+    return res.status(StatusCodes.OK).send({ data });
+  } catch (error) {
+    const err = error as ApiError;
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+}
+
+async function readAlarmController(req: Request, res: Response) {
+  try {
+    const alarmId: number = Number(req.params.id);
+    const data = await postService.readAlarmService(alarmId);
+    return res.status(StatusCodes.OK).send({ data });
+  } catch (error) {
+    const err = error as ApiError;
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+}
+
 module.exports = {
   createPostController,
   updatePostController,
@@ -112,4 +166,7 @@ module.exports = {
   likeController,
   readPostListController,
   readHitRankController,
+  createCommentController,
+  readAlarmListController,
+  readAlarmController,
 };
