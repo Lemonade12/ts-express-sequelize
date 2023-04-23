@@ -115,7 +115,8 @@ async function readPostService(postId: number) {
       value: String(postId),
     }); //업데이트하는부분 체크 1증가 부분
   }
-  return postInfo;
+  const commentList = await postRepo.readCommentList(postId);
+  return { postInfo, commentList };
 }
 
 async function likePost(postId: number, userId: number) {
@@ -201,6 +202,51 @@ async function readAlarmService(alarmId: number) {
   return alarmInfo;
 }
 
+/*
+async function updateCommentService(content: string, userId: number, commentId: number) {
+  const commentInfo = await postRepo.readPostById(postId);
+  // 댓글 존재 유무 체크
+  if (!postInfo) {
+    const error = new ApiError(404, "존재하지 않는 게시글 입니다.");
+    throw error;
+  }
+  // 해당 게시글 작성자인지 체크
+  if (postInfo.user_id !== userId) {
+    const error = new ApiError(401, "해당 게시글에 대한 권한이 없습니다.");
+    throw error;
+  }
+  await postRepo.updatePost(updateInfo, postId);
+
+  if (updateInfo.is_deleted == true) {
+    //이미 삭제된 게시글일 경우
+    if (postInfo.is_deleted == true) {
+      const error = new ApiError(400, "이미 삭제된 게시글 입니다.");
+      throw error;
+    }
+    //해당 게시글 redis에서 삭제(24시간 이내의 게시글일 경우)
+    if (postInfo.createdAt - Number(new Date()) <= 24 * 60 * 60 * 1000) {
+      await redisClient.zRem("topHitList", String(postId));
+    }
+    return { message: "게시글 삭제 완료" };
+  } else if (updateInfo.is_deleted == false) {
+    //이미 복구된? 존재하는 게시글일 경우
+    if (postInfo.is_deleted == false) {
+      const error = new ApiError(400, "이미 복구된(존재하는) 게시글 입니다.");
+      throw error;
+    }
+    //해당 게시글 redis에 업데이트(24시간 이내의 게시글일 경우 / 조회 수 유지할지?)
+    if (postInfo.createdAt - Number(new Date()) <= 24 * 60 * 60 * 1000) {
+      await redisClient.zAdd("topHitList", {
+        score: postInfo.hit,
+        value: String(postId),
+      });
+    }
+    return { message: "게시글 복구 완료" };
+  } else {
+    return { message: "게시글 수정 완료" };
+  }
+}
+*/
 module.exports = {
   createPostService,
   updatePostService,

@@ -152,6 +152,28 @@ async function createComment(postId: number, userId: number, content: string) {
   });
 }
 
+async function readCommentList(postId: number) {
+  const data = comment.findAll({
+    attributes: [
+      ["id", "댓글_id"],
+      ["content", "댓글내용"],
+      [sequelize.col("user.name"), "댓글작성자"],
+    ],
+    include: [
+      {
+        model: user,
+        as: "user",
+        attributes: [],
+      },
+    ],
+    where: {
+      post_id: postId,
+      is_deleted: false,
+    },
+  });
+  return data;
+}
+
 async function createCommentAlarm(userId: number, commentId: number) {
   return alarm.create({
     user_id: userId,
@@ -255,6 +277,7 @@ module.exports = {
   readHitRank,
   uploadFile,
   createComment,
+  readCommentList,
   createCommentAlarm,
   readAlarmList,
   readAlarm,

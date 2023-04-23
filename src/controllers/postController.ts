@@ -159,6 +159,20 @@ async function readAlarmController(req: Request, res: Response) {
   }
 }
 
+async function updateCommentController(req: Request, res: Response) {
+  try {
+    const content: string = req.body.content;
+    const userId: number = req.userId;
+    const commentId: number = Number(req.params.id);
+    const data = await postService.updateCommentService(content, userId, commentId);
+    return res.status(201).json({ message: "댓글이 수정되었습니다." });
+  } catch (error) {
+    const err = error as ApiError;
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+}
+
 module.exports = {
   createPostController,
   updatePostController,
@@ -169,4 +183,5 @@ module.exports = {
   createCommentController,
   readAlarmListController,
   readAlarmController,
+  updateCommentController,
 };
