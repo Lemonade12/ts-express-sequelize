@@ -64,6 +64,10 @@
 ### 채팅 기능
 - Socket.io를 이용한 실시간 채팅 기능
 
+### 댓글, 댓글알림 기능
+- 댓글 작성, 수정, 삭제 기능
+- 댓글 달면 알림내역에 추가
+
 
 ## 📌 DB Modeling
 <img width="588" alt="스크린샷 2023-02-22 오후 4 26 41" src="https://user-images.githubusercontent.com/19259688/220551703-7b37d845-7aef-4ef0-9537-32c33e8f72e7.png">
