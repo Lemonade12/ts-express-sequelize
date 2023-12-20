@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import socket from "./socket";
 import path from "path";
+
 console.log(path.dirname(__filename));
 
 const routes = require("./src/routes/index");
@@ -10,6 +11,11 @@ const routes = require("./src/routes/index");
 const app = express();
 const db = require("./database/index");
 const http = require("http");
+/*const { Client } = require("elasticsearch");
+const client = new Client({
+  host: "https://localhost:9200",
+  log: "trace",
+});*/
 
 db.sequelize
   .sync({ alter: true })

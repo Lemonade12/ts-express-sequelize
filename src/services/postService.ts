@@ -18,6 +18,8 @@ import path from "path";
 const redisClient = require("../../database/redis");
 //redisClient.connect().then();
 
+const esClient = require("../../database/elastic");
+
 async function createPostService(postInfo: CreateInfoDTO, userId: number) {
   const { title, content, hashtags } = postInfo;
   const newPost = await postRepo.createPost(title, content, userId);
@@ -117,6 +119,7 @@ async function readPostService(postId: number) {
     }); //업데이트하는부분 체크 1증가 부분
   }
   const commentList = await postRepo.readCommentList(postId);
+
   return { postInfo, commentList };
 }
 
@@ -155,6 +158,13 @@ async function readPostListService(condition: ListCondition) {
   }
   console.log(condition);
   const data = await postRepo.readPostList(condition);
+  await esClient.index({
+    index: "search-logs",
+    body: {
+      searchWord: condition.search,
+      timestamp: new Date(),
+    },
+  });
   return data;
 }
 
