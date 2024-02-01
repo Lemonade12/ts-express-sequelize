@@ -160,7 +160,7 @@ async function readPostListService(condition: ListCondition) {
   const data = await postRepo.readPostList(condition);
   await esClient.index({
     index: "search-logs",
-    body: {
+    document: {
       searchWord: condition.search,
       timestamp: new Date(),
     },
