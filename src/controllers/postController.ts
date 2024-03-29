@@ -93,6 +93,11 @@ async function readPostListController(req: Request, res: Response) {
     };
     console.log(condition);
     const data = await postService.readPostListService(condition);
+
+    //elasticsearch 관련
+
+
+
     return res.status(StatusCodes.OK).send({ data });
   } catch (error) {
     const err = error as ApiError;

@@ -1,8 +1,8 @@
 require("dotenv").config();
 import express, { Request, Response } from "express";
-import bodyParser from "body-parser";
 import socket from "./socket";
 import path from "path";
+const morgan = require("morgan");
 
 console.log(path.dirname(__filename));
 
@@ -27,11 +27,13 @@ db.sequelize
 const redisClient = require("./database/redis");
 redisClient.connect().then();
 
+app.use(morgan("dev"));
+
 // parse requests of content-type - application/json
-app.use(bodyParser.json());
+app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 // simple route
 app.get("/", (req: Request, res: Response) => {

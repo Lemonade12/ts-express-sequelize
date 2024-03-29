@@ -165,6 +165,30 @@ async function readPostListService(condition: ListCondition) {
       timestamp: new Date(),
     },
   });
+
+  const result = await esClient.count({
+    index: "search-logs",
+    query: {
+      match: {
+        searchWord: "제목",
+      },
+    },
+  });
+
+  const result2 = await esClient.transport.request({
+    method: "POST",
+    path: "/search-logs/_count",
+    body: {
+      query: {
+        match: {
+          searchWord: "제목",
+        },
+      },
+    },
+    querystring: {},
+  });
+
+  console.log(result2);
   return data;
 }
 
