@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../modules/api.error";
 import { body, validationResult } from "express-validator";
+import { emitWarning } from "process";
+import jwt from "jsonwebtoken";
 
 const userService = require("../services/userService");
 
@@ -48,4 +50,15 @@ async function readTodayVisitorController(req: Request, res: Response) {
   }
 }
 
-module.exports = { signup, signin, readTodayVisitorController };
+async function reissueAcessTokenController(req: Request, res: Response) {
+  try {
+    const data: string = await userService.reissueAcessTokenService(req.headers.refreshtoken);
+    return res.status(StatusCodes.OK).send({ data });
+  } catch (error) {
+    const err = error as ApiError;
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+}
+
+module.exports = { signup, signin, readTodayVisitorController, reissueAcessTokenController };

@@ -25,6 +25,9 @@ userRouter.post(
   userController.signin
 );
 
+//Accesstoken 만료 재발급
+userRouter.post("/expiration", userController.reissueAcessTokenController);
+
 //일일방문자수(오늘), 중복카운트x
 userRouter.get("/user/visitor", userController.readTodayVisitorController);
 

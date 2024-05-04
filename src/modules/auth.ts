@@ -12,7 +12,12 @@ async function auth(req: Request, res: Response, next: NextFunction) {
     jwt.verify(access_token, secret_key, async (error, decoded) => {
       if (error) {
         // console.log('error', 333333333333333);
-        return res.status(401).json({ message: "Access token 이 유효하지 않습니다." });
+        console.log(error);
+        if (error.name == "TokenExpiredError") {
+          return res.status(419).json({ message: "Access token 이 만료되었습니다." });
+        } else {
+          return res.status(401).json({ message: "Access token 이 유효하지 않습니다." });
+        }
       }
       if (typeof decoded == "object") {
         const isExistingUser = await user.findOne({

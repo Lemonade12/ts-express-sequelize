@@ -39,10 +39,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Welcome to my application." });
 });
-
-app.use(routes);
 app.use("/css", express.static("./static/css"));
 app.use("/js", express.static("./static/js"));
+app.use(routes);
 
 const server = http.createServer(app);
 

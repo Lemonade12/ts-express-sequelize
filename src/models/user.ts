@@ -24,6 +24,9 @@ module.exports = function (sequelize: Sequelize) {
       name: {
         type: DataTypes.STRING,
       },
+      refresh: {
+        type: DataTypes.STRING,
+      },
     },
     {
       timestamps: true,

@@ -16,6 +16,7 @@ function socket(server: http.Server) {
   io.on("connection", (socket: Socket2) => {
     socket.on("newUser", (data) => {
       console.log(data + "님이 입장하였습니다.");
+      console.log(data);
       socket.name = data;
       io.emit("update", {
         type: "connect",

@@ -18,7 +18,19 @@ async function createUser(email: string, password: string, name: string) {
   });
 }
 
+async function updateRefreshToken(userId: number, refresh_token: string) {
+  return user.update(
+    { refresh: refresh_token },
+    {
+      where: {
+        id: userId,
+      },
+    }
+  );
+}
+
 module.exports = {
   readUserByEmail,
   createUser,
+  updateRefreshToken,
 };
