@@ -29,8 +29,20 @@ async function updateRefreshToken(userId: number, refresh_token: string) {
   );
 }
 
+async function deleteRefreshToken(userId: number) {
+  return user.update(
+    { refresh: null },
+    {
+      where: {
+        id: userId,
+      },
+    }
+  );
+}
+
 module.exports = {
   readUserByEmail,
   createUser,
   updateRefreshToken,
+  deleteRefreshToken,
 };

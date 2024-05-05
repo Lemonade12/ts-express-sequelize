@@ -39,6 +39,18 @@ async function signin(req: Request, res: Response) {
   }
 }
 
+async function logout(req: Request, res: Response) {
+  try {
+    const userId = req.userId;
+    await userService.logout(userId);
+    return res.status(StatusCodes.OK).send({ message: "로그아웃 완료" });
+  } catch (error) {
+    const err = error as ApiError;
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+}
+
 async function readTodayVisitorController(req: Request, res: Response) {
   try {
     const data: number = await userService.readTodayVisitorService();
@@ -61,4 +73,10 @@ async function reissueAcessTokenController(req: Request, res: Response) {
   }
 }
 
-module.exports = { signup, signin, readTodayVisitorController, reissueAcessTokenController };
+module.exports = {
+  signup,
+  signin,
+  readTodayVisitorController,
+  reissueAcessTokenController,
+  logout,
+};

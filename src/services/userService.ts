@@ -85,6 +85,10 @@ async function signin(
   }
 }
 
+async function logout(userId: number) {
+  await userRepo.deleteRefreshToken(userId);
+}
+
 // redis bitmap 자료형 이용
 async function readTodayVisitorService(): Promise<number> {
   const key: string = await createKeyForTodayVisitor();
@@ -134,4 +138,4 @@ async function reissueAcessTokenService(refresh_token: string) {
   }
 }
 
-module.exports = { signup, signin, readTodayVisitorService, reissueAcessTokenService };
+module.exports = { signup, signin, logout, readTodayVisitorService, reissueAcessTokenService };
