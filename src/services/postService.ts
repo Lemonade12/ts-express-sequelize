@@ -110,7 +110,7 @@ async function readPostService(postId: number) {
   postRepo.updatePost(updateInfo, postId);
 
   //24시간 이내의 게시글이면 redis에 업뎃
-  if (postInfo.createdAt - Number(new Date()) <= 24 * 60 * 60 * 1000) {
+  if (Number(new Date()) - postInfo.createdAt <= 24 * 60 * 60 * 1000) {
     console.log("redis에 있음");
     const hit: number = await redisClient.zScore("topHitList", String(postId));
     await redisClient.zAdd("topHitList", {
